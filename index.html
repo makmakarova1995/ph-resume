@@ -286,7 +286,6 @@
   <div class="box">
     <header>
       <div class="mt" id="mt"></div>
-      <a class="ext" id="ext" target="_blank" rel="noopener" hidden>В новой вкладке ↗</a>
       <button class="x" data-close aria-label="Закрыть">✕</button>
     </header>
     <div class="body" id="mb"></div>
@@ -310,7 +309,7 @@ const DEMOS = {
 };
 
 const modal=document.getElementById('modal'), mb=document.getElementById('mb'),
-      mt=document.getElementById('mt'), ext=document.getElementById('ext');
+      mt=document.getElementById('mt');
 let last=null;
 
 function open(key){
@@ -319,7 +318,6 @@ function open(key){
   mt.textContent=d.t;
   mb.innerHTML='';
   if(d.type==='video'){
-    ext.hidden=true;
     mb.innerHTML='<div class="round" id="round">'
       +'<video id="viz" src="'+d.src+'" playsinline preload="metadata"></video>'
       +'<svg class="ring" viewBox="0 0 100 100"><circle class="track" cx="50" cy="50" r="48"></circle>'
@@ -358,12 +356,10 @@ function open(key){
     return;
   }
   if(d.type==='frame'){
-    ext.hidden=false; ext.href=d.src;
     const f=document.createElement('iframe');
     f.src=d.src; f.loading='lazy'; f.title=d.t;
     mb.appendChild(f);
   } else {
-    ext.hidden=true;
     (Array.isArray(d.src)?d.src:[d.src]).forEach(function(srcOne){
       const img=new Image();
       img.src=srcOne; img.alt=d.t;
