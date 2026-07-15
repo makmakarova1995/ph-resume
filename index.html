@@ -35,10 +35,10 @@
   .sub{font-size:clamp(16px,2.4vw,21px);font-weight:800;color:var(--accent);margin-top:8px}
 
   .contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:26px}
-  .contact{background:var(--dark);border-radius:16px;padding:18px 20px;color:#fff;text-decoration:none;display:block;transition:transform .15s ease}
+  .contact{background:var(--dark);border-radius:16px;padding:18px 16px;color:#fff;text-decoration:none;display:block;transition:transform .15s ease}
   .contact:hover{transform:translateY(-2px)}
   .contact .k{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8C8880}
-  .contact .v{font-size:17px;font-weight:800;color:var(--accent);margin-top:6px;word-break:break-all}
+  .contact .v{font-size:14px;letter-spacing:-.01em;font-weight:800;color:var(--accent);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   .grid{display:grid;gap:14px}
   .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
@@ -263,6 +263,21 @@
         </ul></div>
     </div>
   </section>
+
+  <!-- ДЖОБЫ -->
+  <section>
+    <h2>Что из джобов ближе всего</h2>
+    <p class="lead" style="margin-bottom:22px">Интересны и продуктовые задачи, и автоматизации — как упростить путь клиента.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3><span class="num">1</span>Развивать курс как продукт</h3>
+      </div>
+      <div class="card">
+        <h3><span class="num">2</span>Собирать проблемы и превращать в улучшения</h3>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <!-- МОДАЛКА -->
@@ -288,8 +303,7 @@ const DEMOS = {
   interiors:{t:"Лента готовых интерьеров с ценами", type:"frame", src:BASE+"interior-sets-demo/",
     note:"MVP-гипотеза: лента комнат вместо каталога. Обезличено."},
 
-  video:{t:"Видео-визитка", type:"video", src:"video/vizitka.mp4",
-    note:"Минута про то, чем занимаюсь. Нажмите на кружок, чтобы включить."},
+  video:{t:"Видео-визитка", type:"video", src:"video/vizitka.mp4"},
   digest:{t:"Дайджест от агента — прилетает по понедельникам", type:"img", src:"img/digest.png"},
   mails:{t:"Пайплайн по конкурентам через email-воронки", type:"img", src:["img/mails.png","img/mails-2.png"]},
   subs:{t:"Автоматический разбор обучения по подписке", type:"img", src:["img/subs.png","img/subs-2.png"]}
@@ -314,7 +328,7 @@ function open(key){
       +'<div class="subs" id="subs"></div>'
       +'<div class="speeds" id="speeds"><button data-rate="1" class="on">1×</button>'
       +'<button data-rate="1.5">1,5×</button><button data-rate="2">2×</button></div>'
-      +'<div class="vhint">Нажмите на кружок — включится со звуком</div>';
+;
     var wrap=mb.querySelector('#round'), v=mb.querySelector('#viz'), bar=mb.querySelector('.bar'), subs=mb.querySelector('#subs');
     var tr=document.createElement('track');
     tr.kind='subtitles'; tr.srclang='ru'; tr.label='Русские'; tr.src='video/vizitka.vtt'; tr.default=true;
