@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сколько дней компания проработает без вас — тест для собственников</title>
+<style>
+  /* ===== Стиль страницы ===== */
+  :root{
+    --cream:#e5dfce; --cream2:#efeadd; --dark:#282828; --ink:#282828; --ink2:#5f5b52;
+    --accent:#e52d1e; --accent-dark:#c8281a; --line:#d3ccb8; --card:#fffdf7; --ok:#3d7a4a; --warn:#c98a1a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:840px;margin:0 auto;padding:0 22px}
+  section{padding:60px 0}
+
+  .display{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-weight:900;text-transform:uppercase;line-height:.98;letter-spacing:.005em}
+  h1.display{font-size:clamp(30px,5.4vw,54px)}
+  h2.display{font-size:clamp(26px,4.4vw,42px);margin-bottom:22px}
+  .accent{color:var(--accent)}
+  .eyebrow{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:18px}
+  .sub{font-size:19px;color:var(--ink2);margin-top:16px;line-height:1.5}
+
+  header.top{background:var(--dark);position:sticky;top:0;z-index:50}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:15px;padding-bottom:15px}
+  header.top svg{height:30px;width:auto;display:block}
+  header.top .tag{color:var(--cream);font-size:13px;font-weight:500;letter-spacing:.04em;opacity:.85}
+  @media(max-width:600px){header.top .tag{display:none}}
+
+  .hero{background:var(--dark);color:var(--cream);padding:64px 0 72px}
+  .hero .eyebrow{color:var(--accent)}
+  .hero h1{color:var(--cream)}
+  .hero .sub{color:#cfc9b8}
+  ul.checks{list-style:none;margin:26px 0}
+  ul.checks li{padding:8px 0 8px 32px;position:relative;font-size:17px}
+  ul.checks li::before{content:"";position:absolute;left:2px;top:14px;width:16px;height:3px;background:var(--accent)}
+  .hero ul.checks li{color:#e6e1d3}
+
+  .btn{display:inline-block;background:var(--accent);color:var(--cream);border:none;cursor:pointer;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:18px;font-weight:700;padding:17px 30px;border-radius:8px;
+    transition:background .15s, transform .12s;text-align:center;text-decoration:none;line-height:1.2}
+  .btn:hover{background:var(--accent-dark);transform:translateY(-1px)}
+  .btn-note{font-size:14px;margin-top:12px;opacity:.8}
+
+  .muted{background:var(--cream2)}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+  .card b{display:block;margin-bottom:7px;font-size:17px}
+  .card p{font-size:15px;color:var(--ink2)}
+  .doubts .card{margin-bottom:12px}
+  @media(max-width:560px){.cards{grid-template-columns:1fr}}
+
+  /* ===== Квиз ===== */
+  #quiz{background:var(--dark)}
+  #quiz-box{background:var(--card);border-radius:16px;padding:30px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+  .progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:10px}
+  .progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+  .q-count{font-size:13px;color:var(--ink2);margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  .q-title{font-size:22px;font-weight:700;line-height:1.28;margin-bottom:6px}
+  .q-hint{font-size:14px;color:var(--ink2);margin-bottom:16px}
+  .opt{display:block;width:100%;text-align:left;font-family:inherit;font-size:16px;color:var(--ink);
+    background:var(--cream2);border:1.5px solid var(--line);border-radius:10px;padding:14px 17px;margin-bottom:10px;cursor:pointer;
+    transition:border-color .12s, background .12s}
+  .opt:hover{border-color:var(--accent)}
+  .opt.sel{border-color:var(--accent);background:#fbe6e3}
+  .q-nav{display:flex;gap:12px;margin-top:18px;align-items:center}
+  .back{background:none;border:none;font-family:inherit;font-size:15px;color:var(--ink2);cursor:pointer;padding:10px 4px}
+  .back:hover{color:var(--ink)}
+  .hidden{display:none}
+
+  /* индекс */
+  .index-wrap{display:flex;align-items:center;gap:22px;margin:6px 0 4px}
+  .index-num{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-weight:900;font-size:74px;line-height:.9;color:var(--accent)}
+  .index-num small{font-size:26px;color:var(--ink2)}
+  .index-bar{flex:1}
+  .index-track{height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+  .index-track i{display:block;height:100%;width:0;background:var(--accent);transition:width .5s}
+  .index-scale{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin-top:6px}
+
+  .res-block{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:20px 0}
+  .res-block h3{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);margin-bottom:7px;font-weight:700}
+  .res-block p{font-size:16px}
+  .zone{background:var(--cream2);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px}
+  .zone .zh{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:3px}
+  .zone .zn{font-weight:700;font-size:16px}
+  .zone .zs{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+  .zone .zt{font-size:14.5px;color:var(--ink2)}
+  .s-ok{color:var(--ok)} .s-warn{color:var(--warn)} .s-bad{color:var(--accent)}
+  .bonus{background:var(--cream);border-radius:10px;padding:15px 17px;font-size:15px;margin:20px 0}
+  form label{display:block;font-size:14px;font-weight:700;margin:15px 0 5px}
+  form input{width:100%;font-family:inherit;font-size:16px;padding:14px 15px;border:1.5px solid var(--line);border-radius:10px;background:var(--cream2)}
+  form input:focus{outline:none;border-color:var(--accent)}
+  .form-note{font-size:13px;color:var(--ink2);margin-top:12px}
+  .success{text-align:center;padding:28px 6px}
+  .success .mark{font-size:44px;color:var(--ok);margin-bottom:10px}
+
+  footer{background:var(--dark);color:#b8b3a6;padding:28px 0 40px;font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- ===================== ШАПКА С ЛОГО ===================== -->
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="wrap">
+    <h1 class="display">Сколько дней компания проживёт <span class="accent">без вас?</span></h1>
+    <p class="sub">Компания, которую нельзя оставить, не растет, не масштабируется и не продается. За 3 минуты — честный индекс автономности: сколько дней бизнес проработает без вас и где три узких места.</p>
+    <ul class="checks">
+      <li>Узнаете индекс автономности компании — от 0 до 10</li>
+      <li>Увидите три узких горлышка в компании: решения, стандарты, команда</li>
+      <li>Поймёте, с чего начать выход из операционки, чтобы компания росла без вашего постоянного участия</li>
+    </ul>
+    <a href="#quiz" class="btn goal-quiz-start" onclick="startQuiz();return false;">Пройти тест — 7 вопросов</a>
+  </div>
+</section>
+
+<section id="quiz" class="hidden">
+  <div class="wrap">
+    <div id="quiz-box">
+
+      <!-- старт -->
+      <div id="q-start" class="hidden">
+        <p class="q-title">Честный тест на зависимость компании от собственника.</p>
+        <p class="q-hint">7 вопросов, 3 минуты — в конце ваш индекс автономности и три узких места. Результат сразу на экране.</p>
+        <button class="btn goal-quiz-start" onclick="startQuiz()">Начать тест</button>
+      </div>
+
+      <!-- вопросы -->
+      <div id="q-screen" class="hidden">
+        <div class="progress"><i id="q-bar"></i></div>
+        <div class="q-count" id="q-count"></div>
+        <div class="q-title" id="q-title"></div>
+        <div class="q-hint" id="q-hint"></div>
+        <div id="q-opts"></div>
+        <div class="q-nav">
+          <button class="back" id="q-back" onclick="goBack()">← Назад</button>
+        </div>
+      </div>
+
+      <!-- результат -->
+      <div id="q-result" class="hidden">
+        <div class="eyebrow" style="margin-bottom:8px">Ваш результат</div>
+        <div class="res-block">
+          <h3>Индекс автономности компании</h3>
+          <div class="index-wrap">
+            <div class="index-num"><span id="r-num">0</span><small>&nbsp;/&nbsp;10</small></div>
+            <div class="index-bar">
+              <div class="index-track"><i id="r-track"></i></div>
+              <div class="index-scale"><span>Держится на вас</span><span>Работает сама</span></div>
+            </div>
+          </div>
+          <p id="r-verdict"></p>
+          <p id="r-stateb" style="margin-top:8px;color:var(--ink2)"></p>
+        </div>
+
+        <div class="res-block">
+          <h3>Три зоны</h3>
+          <div id="r-zones"></div>
+        </div>
+
+        <div class="res-block">
+          <h3>С чего начать</h3>
+          <p id="r-first"></p>
+        </div>
+
+        <h2 class="display" style="margin-top:28px;font-size:clamp(22px,3.4vw,30px)">Разберите систему с экспертом школы</h2>
+        <p style="font-size:16px;color:var(--ink2)">30 минут, бесплатно. Как выстроить систему, чтобы компания росла без вашего ручного управления. Уйдете с планом, даже если программа не подойдет.</p>
+        <div class="bonus"><b>Бонус к заявке:</b> PDF «Чек-лист: 12 признаков компании, которая работает без собственника».</div><!-- VERIFY: материал у школы -->
+
+        <form id="lead-form" onsubmit="return submitLead(event)">
+          <label for="f-name">Как к вам обращаться</label>
+          <input id="f-name" type="text" autocomplete="name" placeholder="Имя" required>
+          <label for="f-phone">Телефон</label>
+          <input id="f-phone" type="tel" autocomplete="tel" placeholder="+7…" required>
+          <label for="f-email">Почта</label>
+          <input id="f-email" type="email" autocomplete="email" placeholder="you@mail.ru" required>
+          <div class="q-nav" style="margin-top:18px">
+            <button type="submit" class="btn goal-consult">Записаться на разбор</button>
+          </div>
+          <p class="form-note">Контакт продажам без вашего согласия не передаём.</p>
+        </form>
+      </div>
+
+      <!-- успех -->
+      <div id="q-success" class="hidden success">
+        <div class="mark">✓</div>
+        <p class="q-title">Заявка принята</p>
+        <p style="font-size:16px;color:var(--ink2);margin-top:8px">Эксперт школы свяжется с вами в рабочее время, чтобы подобрать удобный слот на 30 минут. Ваш индекс автономности он уже увидит — начнете сразу с самого слабого узла.</p>
+        <p style="font-size:15px;margin-top:12px">Чек-лист «12 признаков компании, которая работает без собственника» пришлем вместе с подтверждением записи.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+// ===== Аналитика: цели Метрики =====
+var METRIKA_ID = null; // VERIFY: вставить номер счетчика перед публикацией
+function track(goal){ if (METRIKA_ID && typeof ym === 'function') ym(METRIKA_ID, 'reachGoal', goal); }
+
+var QUESTIONS = [
+  {q:'Оборот компании?', hint:'Все расчеты и выводы соберем под ваш масштаб.',
+   opts:['До 300 млн ₽','300 млн – 1 млрд ₽','1–5 млрд ₽','5+ млрд ₽']},
+  {q:'Сколько дней компания проработает, не позвонив вам ни разу?', hint:'Тот самый вопрос-зеркало.',
+   opts:['Месяц и больше','Неделю','До первого серьезного вопроса']},
+  {q:'Сколько решений за день проходит лично через вас?', hint:'',
+   opts:['Только стратегические','Десяток операционных','Практически все']},
+  {q:'У ключевых процессов есть написанные стандарты, по которым сработает новый человек?', hint:'',
+   opts:['Да, живые и работают','Есть, но лежат в столе','Все в головах']},
+  {q:'Ваши руководители обычно приносят вам…', hint:'',
+   opts:['Готовые решения','Варианты на выбор','Проблемы']},
+  {q:'Что сделаете с освободившимся временем?', hint:'',
+   opts:['Стратегия и новые рынки','Новое направление / бизнес','Семья, здоровье, жизнь']},
+  {q:'Когда хотите выйти из ручного управления?', hint:'',
+   opts:['В этом году','За 1–2 года','Пока проверяю себя']}
+];
+
+// Индекс: вопросы 2–5 (индексы 1..4), каждый до 2,5 балла: лучший=2.5, средний=1, худший=0
+var PTS = [2.5, 1, 0];
+
+var VERDICT = [
+  {min:8, t:'Компания уже неплохо держится без вас. Осталось закрыть отдельные узлы — и время освободится под стратегию и рост, а не под контроль.'},
+  {min:4, t:'Компания завязана на вас в нескольких ключевых точках. Это типичный стеклянный потолок: пока решения идут через вас, дальше не вырасти.'},
+  {min:0, t:'Компания сегодня держится в основном на вас. Хорошая новость: это лечится системой, и именно с нее начинают — по одному узлу.'}
+];
+
+var STATE_B = [
+  'Освободив время, вы направите его на стратегию и новые рынки — то, что двигает компанию дальше.',
+  'Освободив время, вы запустите новое направление — то, до чего сейчас не доходят руки.',
+  'Освободив время, вы вернете его себе — семье, здоровью, жизни. Это тоже результат.'
+];
+
+// Расшифровка зон по статусу (0 в порядке / 1 зона роста / 2 узкое место)
+var ZONE_TXT = {
+  'Решения':  ['Через вас идут только стратегические решения — операционные компания принимает сама.',
+               'Часть решений уже без вас, но заметный поток все еще замыкается на вас.',
+               'Почти все решения идут через вас — вы и есть главное узкое место компании.'],
+  'Стандарты':['Ключевые процессы описаны живыми стандартами — новый человек сработает по ним.',
+               'Стандарты есть, но лежат в столе — по ним по факту не работают.',
+               'Процессы держатся в головах — без конкретных людей компания встанет.'],
+  'Команда':  ['Руководители приносят готовые решения — вы управляете, а не разгребаете.',
+               'Руководители приносят варианты — растут, но финальное решение все еще на вас.',
+               'Руководители приносят проблемы — вы работаете за них, а не с ними.']
+};
+
+var FIRST = {
+  'Решения':  'Начать стоит с разграничения: какие решения вы отдаете и кому. Пока все идет через вас, ни стандарты, ни команда не спасут.',
+  'Стандарты':'Начать стоит со стандартов на ключевые процессы — живых, встроенных в работу, а не «в стол». С них компания перестает зависеть от конкретных людей.',
+  'Команда':  'Начать стоит с управления управленцами: научить руководителей приносить решения, а не проблемы. Это высвобождает вас быстрее всего.',
+  'ok':       'Базовые узлы у вас закрыты. На разборе имеет смысл идти дальше — как направить освободившееся время на стратегию и рост, а не на контроль.'
+};
+
+var STATUS = [{c:'s-ok',t:'в порядке'},{c:'s-warn',t:'зона роста'},{c:'s-bad',t:'узкое место'}];
+
+var step = -1;
+var answers = [];
+
+function startQuiz(){
+  document.getElementById('quiz').classList.remove('hidden');
+  track('quiz-start');
+  document.getElementById('q-start').classList.add('hidden');
+  document.getElementById('q-result').classList.add('hidden');
+  document.getElementById('q-success').classList.add('hidden');
+  step = 0; answers = [];
+  renderStep();
+  document.getElementById('q-screen').classList.remove('hidden');
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+}
+
+function renderStep(){
+  var q = QUESTIONS[step];
+  document.getElementById('q-bar').style.width = (step/QUESTIONS.length*100) + '%';
+  document.getElementById('q-count').textContent = 'Вопрос ' + (step+1) + ' из ' + QUESTIONS.length;
+  document.getElementById('q-title').textContent = q.q;
+  document.getElementById('q-hint').textContent = q.hint || '';
+  document.getElementById('q-back').style.visibility = step === 0 ? 'hidden' : 'visible';
+
+  var box = document.getElementById('q-opts');
+  box.innerHTML = '';
+  q.opts.forEach(function(text, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'opt'; b.textContent = text;
+    if (answers[step] === i) b.classList.add('sel');
+    b.onclick = function(){ pick(i); };
+    box.appendChild(b);
+  });
+}
+
+function pick(i){
+  answers[step] = i;
+  track('step-' + (step+1));
+  if (step < QUESTIONS.length - 1) { step++; renderStep(); }
+  else showResult();
+}
+
+function goBack(){
+  if (step > 0) { step--; renderStep(); }
+}
+
+function computeIndex(){
+  var s = PTS[answers[1]] + PTS[answers[2]] + PTS[answers[3]] + PTS[answers[4]];
+  return Math.round(s);
+}
+
+function zoneStatuses(){
+  return [
+    {name:'Решения',  st: Math.max(answers[1], answers[2])},
+    {name:'Стандарты',st: answers[3]},
+    {name:'Команда',  st: answers[4]}
+  ];
+}
+
+function showResult(){
+  track('quiz-result');
+  document.getElementById('q-screen').classList.add('hidden');
+
+  var idx = computeIndex();
+  document.getElementById('r-num').textContent = idx;
+  document.getElementById('r-track').style.width = (idx*10) + '%';
+
+  var v = VERDICT.find(function(x){ return idx >= x.min; });
+  document.getElementById('r-verdict').textContent = v.t;
+  document.getElementById('r-stateb').textContent = STATE_B[answers[5]];
+
+  var zones = zoneStatuses();
+  var box = document.getElementById('r-zones');
+  box.innerHTML = '';
+  zones.forEach(function(z){
+    var st = STATUS[z.st];
+    var el = document.createElement('div');
+    el.className = 'zone';
+    el.innerHTML = '<div class="zh"><span class="zn">'+z.name+'</span><span class="zs '+st.c+'">'+st.t+'</span></div>'
+                 + '<div class="zt">'+ZONE_TXT[z.name][z.st]+'</div>';
+    box.appendChild(el);
+  });
+
+  // самая слабая зона (наибольший статус); порядок Решения>Стандарты>Команда при равенстве
+  var worst = zones.slice().sort(function(a,b){ return b.st - a.st; })[0];
+  document.getElementById('r-first').textContent = worst.st === 0 ? FIRST.ok : FIRST[worst.name];
+
+  document.getElementById('q-result').classList.remove('hidden');
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+}
+
+function submitLead(e){
+  e.preventDefault();
+  var name = document.getElementById('f-name').value.trim();
+  var phone = document.getElementById('f-phone').value.trim();
+  var email = document.getElementById('f-email').value.trim();
+  if (!name || !phone || !email) return false;
+  track('consult');
+
+  var q1 = answers[0];
+  var qual = q1 === 0 ? 'below-threshold' : (q1 === 3 ? 'large' : 'target');
+  var idx = computeIndex();
+  var zones = zoneStatuses();
+  var worst = zones.slice().sort(function(a,b){ return b.st - a.st; })[0];
+  // Маркер анти-сегмента (Риск 4 из PRD): 5+ млрд + высокий индекс + «пока проверяю себя» → мягкий прогрев
+  var nurture = (q1 === 3 && idx >= 8 && answers[6] === 2);
+
+  var lead = {
+    name: name,
+    phone: phone,
+    email: email,
+    revenue: QUESTIONS[0].opts[q1],
+    qual: qual,
+    autonomy_index: idx,
+    zones: zones.map(function(z){ return z.name + ': ' + STATUS[z.st].t; }),
+    weakest_zone: worst.name,
+    state_b: QUESTIONS[5].opts[answers[5]],
+    term: QUESTIONS[6].opts[answers[6]],
+    route: nurture ? 'nurture' : 'consult'
+  };
+  // VERIFY: сюда подключить отправку — Telegram-бот или CRM школы. Пока лид виден в консоли:
+  console.log('LEAD', JSON.stringify(lead, null, 2));
+
+  document.getElementById('q-result').classList.add('hidden');
+  document.getElementById('q-success').classList.remove('hidden');
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+  return false;
+}
+</script>
+</body>
+</html>
